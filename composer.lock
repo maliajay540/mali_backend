@@ -154,7 +154,7 @@
                 "url": "https://github.com/laminas/laminas-escaper.git",
                 "reference": "06f211dfffff18d91844c1f55250d5d13c007e18"
             },
-            "dist": {
+            "dist": {   
                 "type": "zip",
                 "url": "https://api.github.com/repos/laminas/laminas-escaper/zipball/06f211dfffff18d91844c1f55250d5d13c007e18",
                 "reference": "06f211dfffff18d91844c1f55250d5d13c007e18",
