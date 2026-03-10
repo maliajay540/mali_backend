@@ -27,7 +27,7 @@ class Database extends Config
     public array $default = [
 
     'DSN'      => '',
-    'hostname' => 'witchyard.proxy.rlwy.net',
+    'hostname' => 'mysql://root:IMgVWkzcVoBIgrqkcomOZhTMdrYaLqXY@switchyard.proxy.rlwy.net:28301/railway',
     'username' => 'root',
     'password' => 'IMgVwkzcVoBIgrqkcomOZhTMdrYaLqXY',
     'database' => 'railway',
