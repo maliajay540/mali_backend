@@ -26,7 +26,7 @@ class Database extends Config
      */
   public $default = [
     'DSN'      => '',
-    'hostname' => 'monorail.proxy.rlwy.net',
+    'hostname' => 'switchyard.proxy.rlwy.net',
     'username' => 'root',
     'password' => 'IMgVWkzcVoBIgrqkcomOZhTMdrYaLqXY',
     'database' => 'railway',
