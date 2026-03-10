@@ -24,10 +24,9 @@ class Database extends Config
      *
      * @var array<string, mixed>
      */
-    public array $default = [
-
+  public $default = [
     'DSN'      => '',
-    'hostname' => 'mysql://root:IMgVWkzcVoBIgrqkcomOZhTMdrYaLqXY@switchyard.proxy.rlwy.net:28301/railway',
+    'hostname' => 'witchyard.proxy.rlwy.net',
     'username' => 'root',
     'password' => 'IMgVwkzcVoBIgrqkcomOZhTMdrYaLqXY',
     'database' => 'railway',
@@ -35,9 +34,14 @@ class Database extends Config
     'DBPrefix' => '',
     'pConnect' => false,
     'DBDebug'  => true,
-    'charset'  => 'utf8',
-    'DBCollat' => 'utf8_general_ci',
-    'port'     => 28301,
+    'charset'  => 'utf8mb4',
+    'DBCollat' => 'utf8mb4_general_ci',
+    'swapPre'  => '',
+    'encrypt'  => false,
+    'compress' => false,
+    'strictOn' => false,
+    'failover' => [],
+    'port'     => 28301
 ];
 
 
