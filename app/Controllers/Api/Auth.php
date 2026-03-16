@@ -47,7 +47,6 @@ class Auth extends ResourceController
                     "name" => "",
                     "profile_complete" => 0
                 ];
-
             }
 
             $payload = [
@@ -63,21 +62,18 @@ class Auth extends ResourceController
                 "status" => true,
                 "token" => $token,
                 "user" => [
-                    "id" => $user->id,
+                    "id" => (int)$user->id,
                     "phone" => $user->phone,
-                    "name" => $user->name,
-                    "profile_complete" => $user->profile_complete
+                    "name" => $user->name ?? "",
+                    "profile_complete" => (int)$user->profile_complete
                 ]
             ]);
-
         } catch (\Throwable $e) {
 
             return $this->respond([
                 "status" => false,
                 "error" => $e->getMessage()
             ], 500);
-
         }
     }
-
 }
