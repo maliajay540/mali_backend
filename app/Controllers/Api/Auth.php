@@ -9,8 +9,9 @@ class Auth extends ResourceController
 {
 
    private $secret = "a8d9f7e4b2c1a9d8e7f6c5b4a3d2e1f0a9b8c7d6e5f4";
+
    public function login()
-{
+   {
     try {
 
         $data = $this->request->getJSON(true);
@@ -44,9 +45,21 @@ class Auth extends ResourceController
 
         }
 
+        // ✅ JWT payload
+        $payload = [
+            "user_id" => $userId,
+            "phone" => $phone,
+            "iat" => time(),
+            "exp" => time() + (60 * 60 * 24 * 30)
+        ];
+
+        // ✅ Generate token
+        $token = JWT::encode($payload, $this->secret, 'HS256');
+
         return $this->respond([
             "status" => true,
-            "user_id" => $userId
+            "user_id" => $userId,
+            "token" => $token
         ]);
 
     } catch (\Throwable $e) {
@@ -57,6 +70,6 @@ class Auth extends ResourceController
         ], 500);
 
     }
-}
+   }
 
 }
