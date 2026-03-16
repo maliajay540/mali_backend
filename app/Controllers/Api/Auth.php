@@ -8,68 +8,76 @@ use Firebase\JWT\JWT;
 class Auth extends ResourceController
 {
 
-   private $secret = "a8d9f7e4b2c1a9d8e7f6c5b4a3d2e1f0a9b8c7d6e5f4";
+    private $secret = "a8d9f7e4b2c1a9d8e7f6c5b4a3d2e1f0a9b8c7d6e5f4";
 
-   public function login()
-   {
-    try {
+    public function login()
+    {
+        try {
 
-        $data = $this->request->getJSON(true);
-        $phone = $data['phone'] ?? null;
+            $data = $this->request->getJSON(true);
+            $phone = $data['phone'] ?? null;
 
-        if (!$phone) {
+            if (!$phone) {
+                return $this->respond([
+                    "status" => false,
+                    "message" => "Phone required"
+                ], 400);
+            }
+
+            $db = \Config\Database::connect();
+
+            $user = $db->table('users')
+                ->where('phone', $phone)
+                ->get()
+                ->getRow();
+
+            if (!$user) {
+
+                $db->table('users')->insert([
+                    "phone" => $phone,
+                    "name" => "",
+                    "profile_complete" => 0
+                ]);
+
+                $userId = $db->insertID();
+
+                $user = (object)[
+                    "id" => $userId,
+                    "phone" => $phone,
+                    "name" => "",
+                    "profile_complete" => 0
+                ];
+
+            }
+
+            $payload = [
+                "user_id" => $user->id,
+                "phone" => $user->phone,
+                "iat" => time(),
+                "exp" => time() + (60 * 60 * 24 * 30)
+            ];
+
+            $token = JWT::encode($payload, $this->secret, 'HS256');
+
             return $this->respond([
-                "status" => false,
-                "message" => "Phone required"
-            ], 400);
-        }
-
-        $db = \Config\Database::connect();
-
-        $user = $db->table('users')
-            ->where('phone', $phone)
-            ->get()
-            ->getRow();
-
-        if (!$user) {
-
-            $db->table('users')->insert([
-                "phone" => $phone
+                "status" => true,
+                "token" => $token,
+                "user" => [
+                    "id" => $user->id,
+                    "phone" => $user->phone,
+                    "name" => $user->name,
+                    "profile_complete" => $user->profile_complete
+                ]
             ]);
 
-            $userId = $db->insertID();
+        } catch (\Throwable $e) {
 
-        } else {
-
-            $userId = $user->id;
+            return $this->respond([
+                "status" => false,
+                "error" => $e->getMessage()
+            ], 500);
 
         }
-
-        // ✅ JWT payload
-        $payload = [
-            "user_id" => $userId,
-            "phone" => $phone,
-            "iat" => time(),
-            "exp" => time() + (60 * 60 * 24 * 30)
-        ];
-
-        // ✅ Generate token
-        $token = JWT::encode($payload, $this->secret, 'HS256');
-
-        return $this->respond([
-            "status" => true,
-            "user_id" => $userId,
-            "token" => $token
-        ]);
-
-    } catch (\Throwable $e) {
-
-        return $this->respond([
-            "status" => false,
-            "error" => $e->getMessage()
-        ], 500);
-
     }
-   }
 
 }
