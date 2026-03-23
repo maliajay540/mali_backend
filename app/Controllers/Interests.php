@@ -5,6 +5,7 @@ namespace App\Controllers;
 use CodeIgniter\RESTful\ResourceController;
 use App\Models\InterestModel;
 use CodeIgniter\I18n\Time;
+use App\Libraries\UserContext;
 
 class Interests extends ResourceController
 {
@@ -13,7 +14,7 @@ class Interests extends ResourceController
 
     public function send()
     {
-        $senderId = $this->request->user->uid;
+        $senderId = UserContext::getUserId();
         $receiverId = $this->request->getVar('receiver_id');
 
         if (!$receiverId) {
@@ -35,7 +36,7 @@ class Interests extends ResourceController
         }
 
         // Check limit for free users
-        if (!$this->request->user->is_premium) {
+        if (!UserContext::isPremium()) {
             $today = Time::now()->toDateString();
             $count = $model->where('sender_id', $senderId)
                            ->like('created_at', $today)
@@ -75,7 +76,7 @@ class Interests extends ResourceController
         }
 
         // Only receiver can respond
-        if ($interest['receiver_id'] != $this->request->user->uid) {
+        if ($interest['receiver_id'] != UserContext::getUserId()) {
             return $this->failForbidden('You are not authorized to respond to this interest');
         }
 

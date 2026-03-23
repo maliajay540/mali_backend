@@ -18,8 +18,10 @@ class Auth extends ResourceController
             return $this->respond(['status' => false, 'message' => 'Too many requests. Please wait.'], 429);
         }
 
+        // Require password
         $rules = [
             'phone' => 'required|min_length[10]|max_length[15]',
+            'password' => 'required|min_length[6]',
         ];
 
         if (!$this->validate($rules)) {
@@ -39,14 +41,14 @@ class Auth extends ResourceController
             // Auto register
             $data = [
                 'phone' => $phone,
-                'password' => password_hash($password ?? '123456', PASSWORD_DEFAULT),
+                'password' => password_hash($password, PASSWORD_DEFAULT),
                 'name' => 'User ' . substr($phone, -4),
             ];
             $userModel->save($data);
             $user = $userModel->where('phone', $phone)->first();
         } else {
-            // Verify password if provided
-            if ($password && !password_verify($password, $user['password'])) {
+            // Verify password
+            if (!password_verify($password, $user['password'])) {
                 return $this->respond(['status' => false, 'message' => 'Invalid credentials'], 401);
             }
         }

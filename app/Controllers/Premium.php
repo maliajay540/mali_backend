@@ -6,6 +6,7 @@ use CodeIgniter\RESTful\ResourceController;
 use App\Models\PaymentModel;
 use App\Models\UserModel;
 use CodeIgniter\I18n\Time;
+use App\Libraries\UserContext;
 
 class Premium extends ResourceController
 {
@@ -22,7 +23,7 @@ class Premium extends ResourceController
             return $this->fail('Plan, amount, and transaction ID required');
         }
 
-        $userId = $this->request->user->uid;
+        $userId = UserContext::getUserId();
 
         // Mock payment verification
         $data = [

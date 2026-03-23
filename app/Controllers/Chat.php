@@ -5,6 +5,7 @@ namespace App\Controllers;
 use CodeIgniter\RESTful\ResourceController;
 use App\Models\MessageModel;
 use App\Models\InterestModel;
+use App\Libraries\UserContext;
 
 class Chat extends ResourceController
 {
@@ -13,7 +14,7 @@ class Chat extends ResourceController
 
     public function send()
     {
-        $senderId = $this->request->user->uid;
+        $senderId = UserContext::getUserId();
         $receiverId = $this->request->getVar('receiver_id');
         $message = $this->request->getVar('message');
 
@@ -22,7 +23,7 @@ class Chat extends ResourceController
         }
 
         // Check if sender is premium
-        if (!$this->request->user->is_premium) {
+        if (!UserContext::isPremium()) {
             return $this->failForbidden('Upgrade to premium to chat');
         }
 
@@ -57,7 +58,7 @@ class Chat extends ResourceController
 
     public function messages()
     {
-        $userId = $this->request->user->uid;
+        $userId = UserContext::getUserId();
         $partnerId = $this->request->getVar('partner_id');
 
         // Allow user1/user2 params as per requirement, but validate

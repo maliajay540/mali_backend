@@ -8,6 +8,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Config\Services;
+use App\Libraries\UserContext;
 
 class AuthFilter implements FilterInterface
 {
@@ -33,7 +34,8 @@ class AuthFilter implements FilterInterface
 
         try {
             $decoded = JWT::decode($token, new Key($key, 'HS256'));
-            $request->user = $decoded;
+            // Store user in context instead of request property
+            UserContext::setUser($decoded);
         } catch (\Exception $e) {
             $response = Services::response();
             return $response->setJSON([
